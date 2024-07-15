@@ -42,7 +42,7 @@ public class DigInAutowired {
         // System.out.println(bean1);
 
         // 3. 如何按类型查找值：也就是inject方法的具体实现
-        // 3.1 Field可以看成成员变量：通过反射获取bean3字段，然后调用beanFactory.doResolveDependency解析bean3的依赖
+        // 3.1 成员变量（Field）：通过反射获取bean3字段，然后调用beanFactory.doResolveDependency解析bean3的依赖
         Field bean3 = Bean1.class.getDeclaredField("bean3");
         DependencyDescriptor dd1 = new DependencyDescriptor(bean3, false);
         Object o = beanFactory.doResolveDependency(dd1, null, null, null);  // 查找bean3的值

@@ -1,3 +1,14 @@
+## skill
+
+【CTRL + ALT + U 查看类继承接口】
+
+alt + 7 查看所有方法
+
+## tips
+
+1.
+感觉也可以写一篇blog：[java新特性 ---- instanceof的模式匹配-总结版_idea java: -source 15 中不支持 instanceof 中的模式匹配-CSDN博客](https://blog.csdn.net/weixin_53676834/article/details/135852897)
+
 ## 容器与 bean
 
 ### 1) 容器接口
@@ -15,7 +26,7 @@
 
 #### 演示1 - BeanFactory 与 ApplicationContext 的区别
 
-##### 代码参考
+代码参考
 
 **com.itheima.a01** 包
 
@@ -30,14 +41,18 @@
       的一个重要成员变量就是 BeanFactory
 2. BeanFactory 能干点啥
     - 表面上只有 getBean
-    - 实际上控制反转、基本的依赖注入、直至 Bean 的生命周期的各种功能，都由它的实现类**DefaultListableBeanFactory**提供
-    - 例子中通过反射查看了它的成员变量 singletonObjects，内部包含了所有的单例 bean
+    - 实际上控制反转、基本的依赖注入、直至 Bean 的生命周期的各种功能，都由它的实现类**`DefaultListableBeanFactory`**提供
+    - 例子中通过反射查看了它的成员变量 `singletonObjects`，内部包含了所有的单例 bean
 3. ApplicationContext 比 BeanFactory 多点啥
 
     * ApplicationContext 组合并扩展了 BeanFactory 的功能
     * 国际化(getMessage)、通配符方式获取一组 Resource 资源(getResource)、整合 Environment 环境(getEnvironment)
       、事件发布与监听(publishEvent)
     * 新学一种代码之间解耦途径，事件解耦
+
+【CTRL + ALT + U 查看类继承接口】
+
+![image-20240714213321715](https://cdn.jsdelivr.net/gh/kixuan/PicGo/image-20240714213321715.png)
 
 建议练习：完成用户注册与发送短信之间的解耦，用事件方式、和 AOP 方式分别实现
 
@@ -99,34 +114,34 @@ hi=你好
 
 ### 2) 容器实现
 
-Spring 的发展历史较为悠久，因此很多资料还在讲解它较旧的实现，这里出于怀旧的原因，把它们都列出来，供大家参考
+Spring 的发展历史较为悠久，因此很多资料还在讲解它较旧的实现，这里出于怀旧的原因（笑晕，把它们都列出来，供大家参考
 
-* DefaultListableBeanFactory，是 BeanFactory 最重要的实现，像**控制反转**和**依赖注入**功能，都是它来实现
-* ClassPathXmlApplicationContext，从类路径查找 XML 配置文件，创建容器（旧）
-* FileSystemXmlApplicationContext，从磁盘路径查找 XML 配置文件，创建容器（旧）
-* XmlWebApplicationContext，传统 SSM 整合时，基于 XML 配置文件的容器（旧）
-* AnnotationConfigWebApplicationContext，传统 SSM 整合时，基于 java 配置类的容器（旧）
-* AnnotationConfigApplicationContext，Spring boot 中非 web 环境容器（新）
-* AnnotationConfigServletWebServerApplicationContext，Spring boot 中 servlet web 环境容器（新）
-* AnnotationConfigReactiveWebServerApplicationContext，Spring boot 中 reactive web 环境容器（新）
+* `DefaultListableBeanFactory`，是 BeanFactory 最重要的实现，像**控制反转**和**依赖注入**功能，都是它来实现
+* `ClassPathXmlApplicationContext`，从类路径查找 XML 配置文件，创建容器（旧）
+* `FileSystemXmlApplicationContext`，从磁盘路径查找 XML 配置文件，创建容器（旧）
+* `XmlWebApplicationContext`，传统 SSM 整合时，基于 XML 配置文件的容器（旧）
+* `AnnotationConfigWebApplicationContext`，传统 SSM 整合时，基于 java 配置类的容器（旧）
+* `AnnotationConfigApplicationContext`，Spring boot 中非 web 环境容器（新）
+* `AnnotationConfigServletWebServerApplicationContext`，Spring boot 中 servlet web 环境容器（新）
+* `AnnotationConfigReactiveWebServerApplicationContext`，Spring boot 中 reactive web 环境容器（新）
 
 另外要注意的是，后面这些带有 ApplicationContext 的类都是 ApplicationContext 接口的实现，但它们是**组合**了
 DefaultListableBeanFactory 的功能，并非继承而来
 
 #### 演示1 - DefaultListableBeanFactory
 
-##### 代码参考
+代码参考
 
 **com.itheima.a02.TestBeanFactory**
 
 #### 收获💡
 
-* beanFactory 可以通过 registerBeanDefinition 注册一个 bean definition 对象
+* beanFactory 可以通过 `registerBeanDefinition` 注册一个 bean definition 对象
     * 我们平时使用的配置类、xml、组件扫描等方式都是生成 bean definition 对象注册到 beanFactory 当中
     * bean definition 描述了这个 bean 的创建蓝图：scope 是什么、用构造还是工厂创建、初始化销毁方法是什么，等等
-* beanFactory 需要手动调用 beanFactory 后处理器对它做增强
+* beanFactory 需要手动调用 `beanFactory 后处理器`对它做增强
     * 例如通过解析 @Bean、@ComponentScan 等注解，来补充一些 bean definition
-* beanFactory 需要手动添加 bean 后处理器，以便对后续 bean 的创建过程提供增强
+* beanFactory 需要手动添加 `bean 后处理器`，以便对后续 bean 的创建过程提供增强
     * 例如 @Autowired，@Resource 等注解的解析都是 bean 后处理器完成的
     * bean 后处理的添加顺序会对解析结果有影响，见视频中同时加 @Autowired，@Resource 的例子
 * beanFactory 需要手动调用方法来初始化单例
@@ -136,9 +151,11 @@ DefaultListableBeanFactory 的功能，并非继承而来
 
 **❗bean后置处理器和bean工厂后置处理器不同❗**
 
+getBeanDefinition方法：获取bean的一些信息比如说模式、姓名、初始化等等，具体见`BeanDefinition`
+
 #### 演示2 - 常见 ApplicationContext 实现
 
-##### 代码参考
+代码参考
 
 **com.itheima.a02.A02**
 
@@ -162,7 +179,7 @@ DefaultListableBeanFactory 的功能，并非继承而来
 
 #### 演示1 - bean 生命周期
 
-##### 代码参考
+代码参考
 
 **com.itheima.a03** 包的`MyBeanPostProcessor`类
 
@@ -208,7 +225,7 @@ graph LR
 
 #### 演示2 - 模板方法设计模式
 
-##### 关键代码
+关键代码
 
 ```java
 public class TestMethodTemplate {
@@ -248,7 +265,7 @@ public class TestMethodTemplate {
 
 #### 演示3 - bean 后处理器排序
 
-##### 代码参考
+代码参考
 
 **com.itheima.a03.TestProcessOrder**
 
@@ -262,38 +279,39 @@ public class TestMethodTemplate {
 
 #### 演示1 - 后处理器作用
 
-##### 代码参考
+代码参考
 
 **com.itheima.a04** 包
 
 #### 收获💡
 
-1. @Autowired 等注解的解析属于 bean 生命周期阶段（依赖注入, 初始化）的扩展功能，这些扩展功能由 bean 后处理器来完成
+1. @Autowired 等注解的解析属于 bean 生命周期阶段（依赖注入, 初始化）的扩展功能，这些扩展功能由 bean 后处理器来完成**
+   【也就是说，Bean后置处理器，为Bean生命周期各个阶段提供扩展功能】**
 2. 每个后处理器各自增强什么功能
-    * AutowiredAnnotationBeanPostProcessor 解析 @Autowired 与 @Value
-    * CommonAnnotationBeanPostProcessor 解析 @Resource、@PostConstruct、@PreDestroy
-    * ConfigurationPropertiesBindingPostProcessor 解析 @ConfigurationProperties
-3. 另外 ContextAnnotationAutowireCandidateResolver 负责获取 @Value 的值，解析 @Qualifier、泛型、@Lazy 等
+    * `AutowiredAnnotationBeanPostProcessor` 解析 @Autowired 与 @Value
+    * `CommonAnnotationBeanPostProcessor` 解析 @Resource、@PostConstruct、@PreDestroy
+    * `ConfigurationPropertiesBindingPostProcessor` 解析 @ConfigurationProperties
+3. 另外 `ContextAnnotationAutowireCandidateResolver` 负责获取 @Value 的值，解析 @Qualifier、泛型、@Lazy 等
 
 #### 演示2 - @Autowired bean 后处理器运行分析
 
-##### 代码参考
+代码参考
 
 **com.itheima.a04.DigInAutowired**
 
 #### 收获💡
 
-1. AutowiredAnnotationBeanPostProcessor.findAutowiringMetadata 用来获取某个 bean 上加了 @Value @Autowired
-   的成员变量，方法参数的信息，表示为 InjectionMetadata
-2. InjectionMetadata 可以完成依赖注入
-3. InjectionMetadata 内部根据成员变量，方法参数封装为 DependencyDescriptor 类型
-4. 有了 DependencyDescriptor，就可以利用 beanFactory.doResolveDependency 方法进行基于类型的查找
+1. AutowiredAnnotationBeanPostProcessor.findAutowiringMetadata 用来获取某个 bean 上加了 @Value
+   @Autowired的成员变量，方法参数的信息，表示为 `InjectionMetadata`
+2. `InjectionMetadata` 可以完成依赖注入
+3. `InjectionMetadata` 内部根据成员变量，方法参数封装为 `DependencyDescriptor` 类型
+4. 有了 `DependencyDescriptor`，就可以利用 beanFactory.`doResolveDependency` 方法进行基于类型的查找
 
 ### 5) BeanFactory 后处理器
 
 #### 演示1 - BeanFactory 后处理器的作用
 
-##### 代码参考
+代码参考
 
 **com.itheima.a05** 包
 
@@ -312,7 +330,7 @@ public class TestMethodTemplate {
 
 #### 演示2 - 模拟解析 @ComponentScan
 
-##### 代码参考
+代码参考
 
 **com.itheima.a05.ComponentScanPostProcessor**
 
@@ -325,7 +343,7 @@ public class TestMethodTemplate {
 
 #### 演示3 - 模拟解析 @Bean
 
-##### 代码参考
+代码参考
 
 **com.itheima.a05.AtBeanPostProcessor**
 
@@ -335,7 +353,7 @@ public class TestMethodTemplate {
 
 #### 演示4 - 模拟解析 Mapper 接口
 
-##### 代码参考
+代码参考
 
 **com.itheima.a05.MapperPostProcessor**
 
@@ -348,7 +366,7 @@ public class TestMethodTemplate {
 
 #### 演示 - Aware 接口及 InitializingBean 接口
 
-##### 代码参考
+代码参考
 
 **com.itheima.a06** 包
 
@@ -443,7 +461,7 @@ public class MyConfig1 {
 
 #### 演示 - 初始化销毁顺序
 
-##### 代码参考
+代码参考
 
 **com.itheima.a07** 包
 
@@ -483,7 +501,7 @@ Spring 提供了多种初始化手段，除了课堂上讲的 @PostConstruct，@
 
 #### 演示1 - request, session, application 作用域
 
-##### 代码参考
+代码参考
 
 **com.itheima.a08** 包
 
@@ -630,7 +648,7 @@ com.itheima.demo.cycle.F@56303b57
 
 #### 演示2 - 4种解决方法
 
-##### 代码参考
+代码参考
 
 **com.itheima.a08.sub** 包
 
@@ -872,7 +890,7 @@ public class $Proxy0 extends Proxy implements A12.Foo {
 
 #### 演示2 - 方法反射优化
 
-##### 代码参考
+代码参考
 
 **com.itheima.a12.TestMethodInvoke**
 
@@ -891,7 +909,7 @@ public class $Proxy0 extends Proxy implements A12.Foo {
 
 #### 演示 - 模拟 cglib 代理
 
-##### 代码参考
+代码参考
 
 **com.itheima.a13** 包
 
@@ -936,7 +954,7 @@ public class A14Application {
 
 #### 演示 - cglib 如何避免反射
 
-##### 代码参考
+代码参考
 
 **com.itheima.a13.ProxyFastClass**，**com.itheima.a13.TargetFastClass**
 
@@ -1035,7 +1053,7 @@ class JdkDynamicAopProxy {
 
 #### 演示 - 底层切点、通知、切面
 
-##### 代码参考
+代码参考
 
 **com.itheima.a15.A15**
 
@@ -1057,7 +1075,7 @@ class JdkDynamicAopProxy {
 
 #### 演示 - 切点匹配
 
-##### 代码参考
+代码参考
 
 **com.itheima.a16.A16**
 
@@ -1070,7 +1088,7 @@ class JdkDynamicAopProxy {
 
 #### 演示1 - 代理创建器
 
-##### 代码参考
+代码参考
 
 **org.springframework.aop.framework.autoproxy** 包
 
@@ -1088,7 +1106,7 @@ class JdkDynamicAopProxy {
 
 #### 演示2 - 代理创建时机
 
-##### 代码参考
+代码参考
 
 **org.springframework.aop.framework.autoproxy.A17_1**
 
@@ -1101,7 +1119,7 @@ class JdkDynamicAopProxy {
 
 #### 演示3 - @Before 对应的低级通知
 
-##### 代码参考
+代码参考
 
 **org.springframework.aop.framework.autoproxy.A17_2**
 
@@ -1174,7 +1192,7 @@ ih -->> -Proxy :
 
 #### 演示1 - 通知调用过程
 
-##### 代码参考
+代码参考
 
 **org.springframework.aop.framework.A18**
 
@@ -1191,7 +1209,7 @@ ih -->> -Proxy :
 
 #### 演示2 - 模拟 MethodInvocation
 
-##### 代码参考
+代码参考
 
 **org.springframework.aop.framework.A18_1**
 
@@ -1207,7 +1225,7 @@ MethodInvocation 的编程技巧在实现拦截器、过滤器时能用上
 
 #### 演示 - 带参数绑定的通知方法调用
 
-##### 代码参考
+代码参考
 
 **org.springframework.aop.framework.autoproxy.A19**
 
@@ -1228,7 +1246,7 @@ RequestMappingHandlerMapping 与 RequestMappingHandlerAdapter 俩是一对，分
 
 #### 演示1 - DispatcherServlet 初始化
 
-##### 代码参考
+代码参考
 
 **com.itheima.a20** 包
 
@@ -1246,7 +1264,7 @@ RequestMappingHandlerMapping 与 RequestMappingHandlerAdapter 俩是一对，分
 
 #### 演示2 - 自定义参数与返回值处理器
 
-##### 代码参考
+代码参考
 
 **com.itheima.a20.TokenArgumentResolver** ，**com.itheima.a20.YmlReturnValueHandler**
 
@@ -1259,7 +1277,7 @@ RequestMappingHandlerMapping 与 RequestMappingHandlerAdapter 俩是一对，分
 
 #### 演示 - 常见参数解析器
 
-##### 代码参考
+代码参考
 
 **com.itheima.a21** 包
 
@@ -1293,7 +1311,7 @@ RequestMappingHandlerMapping 与 RequestMappingHandlerAdapter 俩是一对，分
 
 #### 演示 - 两种方法获取参数名
 
-##### 代码参考
+代码参考
 
 **com.itheima.a22.A22**
 
@@ -1398,7 +1416,7 @@ TypeConverterDelegate --> PropertyEditorRegistry
 
 #### 演示1 - 类型转换与数据绑定
 
-##### 代码参考
+代码参考
 
 **com.itheima.a23** 包
 
@@ -1413,7 +1431,7 @@ TypeConverterDelegate --> PropertyEditorRegistry
 
 #### 演示2 - 数据绑定工厂
 
-##### 代码参考
+代码参考
 
 **com.itheima.a23.TestServletDataBinderFactory**
 
@@ -1433,7 +1451,7 @@ ServletRequestDataBinderFactory 的用法和扩展点
 
 #### 演示3 - 获取泛型参数
 
-##### 代码参考
+代码参考
 
 **com.itheima.a23.sub** 包
 
@@ -1570,7 +1588,7 @@ container -->> -adapter:
 
 #### 演示 - 准备 @ModelAttribute
 
-##### 代码参考
+代码参考
 
 **com.itheima.a26** 包
 
@@ -1621,7 +1639,7 @@ container -->> -adapter:
 
 #### 演示 - 常见返回值处理器
 
-##### 代码参考
+代码参考
 
 **com.itheima.a27** 包
 
@@ -1646,7 +1664,7 @@ container -->> -adapter:
 
 #### 演示 - MessageConverter 的作用
 
-##### 代码参考
+代码参考
 
 **com.itheima.a28.A28**
 
@@ -1664,7 +1682,7 @@ container -->> -adapter:
 
 #### 演示 - ResponseBodyAdvice 增强
 
-##### 代码参考
+代码参考
 
 **com.itheima.a29** 包
 
@@ -1712,7 +1730,7 @@ container -->> -adapter:
 
 #### 演示 - ExceptionHandlerExceptionResolver
 
-##### 代码参考
+代码参考
 
 **com.itheima.a30.A30**
 
@@ -1725,7 +1743,7 @@ container -->> -adapter:
 
 #### 演示 - 准备 @ExceptionHandler
 
-##### 代码参考
+代码参考
 
 **com.itheima.a31** 包
 
@@ -1886,7 +1904,7 @@ public RouterFunction<ServerResponse> r1() {
 
 #### 演示1 - 本组映射器和适配器
 
-##### 代码参考
+代码参考
 
 **org.springframework.boot.autoconfigure.web.servlet.A35**
 
@@ -2508,7 +2526,7 @@ static class AutoConfiguration1 {
 
 #### 演示 - FactoryBean
 
-##### 代码参考
+代码参考
 
 **com.itheima.a43** 包
 
@@ -2536,7 +2554,7 @@ static class AutoConfiguration1 {
 
 #### 演示 - @Indexed
 
-##### 代码参考
+代码参考
 
 **com.itheima.a44** 包
 
@@ -2552,7 +2570,7 @@ static class AutoConfiguration1 {
 
 #### 演示 - 代理
 
-##### 代码参考
+代码参考
 
 **com.itheima.a45** 包
 
@@ -2589,7 +2607,7 @@ static class AutoConfiguration1 {
 
 #### 演示 - @Value 装配过程
 
-##### 代码参考
+代码参考
 
 **com.itheima.a46** 包
 
@@ -2604,7 +2622,7 @@ static class AutoConfiguration1 {
 
 #### 演示 - @Autowired 装配过程
 
-##### 代码参考
+代码参考
 
 **com.itheima.a47** 包
 
@@ -2634,7 +2652,7 @@ static class AutoConfiguration1 {
 
 #### 演示 - 事件监听器
 
-##### 代码参考
+代码参考
 
 **com.itheima.a48** 包
 
@@ -2652,7 +2670,7 @@ static class AutoConfiguration1 {
 
 #### 演示 - 事件发布器
 
-##### 代码参考
+代码参考
 
 **com.itheima.a49** 包
 
