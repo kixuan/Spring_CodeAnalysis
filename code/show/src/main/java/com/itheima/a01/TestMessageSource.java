@@ -6,6 +6,9 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 
 import java.util.Locale;
 
+/**
+ * 1. MessageSource -- 国际化
+ */
 public class TestMessageSource {
     public static void main(String[] args) {
         GenericApplicationContext context = new GenericApplicationContext();

@@ -5,10 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+/**
+ * @EventListener 事件监听器
+ */
 @Component
-public class Component2 {
+public class Listener {
 
-    private static final Logger log = LoggerFactory.getLogger(Component2.class);
+    private static final Logger log = LoggerFactory.getLogger(Listener.class);
 
     @EventListener
     public void aaa(UserRegisteredEvent event) {

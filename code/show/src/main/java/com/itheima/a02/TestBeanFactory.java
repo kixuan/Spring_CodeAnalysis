@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 
 import javax.annotation.Resource;
+import java.util.Objects;
 
 public class TestBeanFactory {
 
@@ -26,10 +27,10 @@ public class TestBeanFactory {
         // 2. 把 Config 注册到 BeanFactory
         beanFactory.registerBeanDefinition("config", beanDefinition);
 
-        // 给 BeanFactory 添加一些常用的后处理器
+        // 3. 给 BeanFactory 添加一些常用的后处理器
         AnnotationConfigUtils.registerAnnotationConfigProcessors(beanFactory);
 
-        // 把所有的 BeanFactory 后处理器(BeanFactoryPostProcessor) 都拿到，然后调用 postProcessBeanFactory 方法
+        // 4. 把所有的 BeanFactory 后处理器(BeanFactoryPostProcessor) 都拿到，然后调用 postProcessBeanFactory 方法
         // 补充了一些 bean 定义，例如 @Autowired 的解析
         beanFactory.getBeansOfType(BeanFactoryPostProcessor.class).values().forEach(beanFactoryPostProcessor -> {
             beanFactoryPostProcessor.postProcessBeanFactory(beanFactory);
@@ -37,7 +38,7 @@ public class TestBeanFactory {
 
         // Bean 后处理器, 针对 bean 的生命周期的各个阶段提供扩展, 例如 @Autowired、@Resource
         beanFactory.getBeansOfType(BeanPostProcessor.class).values().stream()
-                .sorted(beanFactory.getDependencyComparator())   // 比较器排序，设置优先级，比如说加了之后就是优先级Resource > Autowired
+                .sorted(Objects.requireNonNull(beanFactory.getDependencyComparator()))   // 比较器排序，设置优先级，比如说加了之后就是优先级Resource > Autowired
                 .forEach(beanPostProcessor -> {
                     System.out.println(">>>>" + beanPostProcessor);  // 验证优先级：internalAutowiredAnnotationProcessor(@Autowired) > internalCommonAnnotationProcessor(@Resource)
                     beanFactory.addBeanPostProcessor(beanPostProcessor); //建立bean工厂和后置处理器的联系
@@ -50,11 +51,11 @@ public class TestBeanFactory {
         beanFactory.preInstantiateSingletons(); // 提前准备好所有单例，而不是等到要用的时候才去创建【默认】
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ");
         // 直接打印的话bean2是null，因为bean2还没有初始化，依赖注入还需要其他bean处理器，处理@Autowire
-//        System.out.println(beanFactory.getBean(Bean1.class).getBean2());
+        // System.out.println(beanFactory.getBean(Bean1.class).getBean2());
         System.out.println(beanFactory.getBean(Bean1.class).getInter());
         /*
             学到了什么:
-            a. beanFactory 不会做的事    --applicationContext 就会完成这些事情
+            a. beanFactory 不会做的事    -- applicationContext 就会完成这些事情
                    1. 不会主动调用 BeanFactory 后处理器
                    2. 不会主动添加 Bean 后处理器
                    3. 不会主动初始化单例

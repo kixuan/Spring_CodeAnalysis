@@ -8,6 +8,13 @@ import org.springframework.beans.factory.config.DestructionAwareBeanPostProcesso
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.springframework.stereotype.Component;
 
+/**
+ * bean 的生命周期, 以及 bean 后处理器
+ * 依赖注入阶段
+ * 初始化前后
+ * 实例化前后
+ * 销毁前
+ */
 @Component
 public class MyBeanPostProcessor implements InstantiationAwareBeanPostProcessor, DestructionAwareBeanPostProcessor {
 

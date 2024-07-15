@@ -41,7 +41,7 @@ public class A02 {
             System.out.println(name);
         }
         System.out.println("读取之后...");
-        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory); // 从xml读取和解析bean定义
         reader.loadBeanDefinitions(new ClassPathResource("a02.xml"));   // 通过类路径读取
         // reader.loadBeanDefinitions(new FileSystemResource("src\\main\\resources\\a02.xml"));   // 通过磁盘路径读取
         for (String name : beanFactory.getBeanDefinitionNames()) {
@@ -73,12 +73,12 @@ public class A02 {
     // 和上一个不同的就在于路径写法
     private static void testFileSystemXmlApplicationContext() {
         FileSystemXmlApplicationContext context =
-                new FileSystemXmlApplicationContext(
-                        "src\\main\\resources\\a02.xml");
+                new FileSystemXmlApplicationContext("src\\main\\resources\\a02.xml");
         for (String name : context.getBeanDefinitionNames()) {
             System.out.println(name);
         }
 
+        // 看bean2是否成功依赖注入bean1
         System.out.println(context.getBean(Bean2.class).getBean1());
     }
 
@@ -96,7 +96,7 @@ public class A02 {
         System.out.println(context.getBean(Bean2.class).getBean1());
     }
 
-    // ⬇️较为经典的容器, 基于 java 配置类来创建, 用于 web 环境  ==》学会内嵌Tomcat怎么工作？
+    // ⬇️较为经典的容器, 基于 java 配置类来创建, 用于 web 环境  ==》学会内嵌Tomcat怎么工作的
     private static void testAnnotationConfigServletWebServerApplicationContext() {
         AnnotationConfigServletWebServerApplicationContext context =
                 new AnnotationConfigServletWebServerApplicationContext(WebConfig.class);
@@ -136,7 +136,7 @@ public class A02 {
                     return null;
                 }
             };
-
+            // lambda 表达式写法
             //     return (request, response) -> {
             //         response.getWriter().print("hello");
             //         return null;

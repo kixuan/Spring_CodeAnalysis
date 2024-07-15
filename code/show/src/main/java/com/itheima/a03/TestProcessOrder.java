@@ -13,8 +13,8 @@ import org.springframework.core.annotation.Order;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
-    bean 后处理的的排序
+/**
+ * bean 后处理的的排序：PriorityOrdered > Ordered > 其它
  */
 public class TestProcessOrder {
 

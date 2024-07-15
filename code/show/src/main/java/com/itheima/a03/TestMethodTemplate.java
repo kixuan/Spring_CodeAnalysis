@@ -3,6 +3,10 @@ package com.itheima.a03;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 模板方法设计模式：把一个算法的不变部分抽象到父类，把可变部分留给子类实现
+ * 在本例中，就是把添加 bean 后置处理器给抽象出来，可以 inject 不同的 bean
+ */
 public class TestMethodTemplate {
 
     public static void main(String[] args) {
