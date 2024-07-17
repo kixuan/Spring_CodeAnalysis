@@ -315,12 +315,12 @@ public class TestMethodTemplate {
 
 **com.itheima.a05** 包
 
-* ConfigurationClassPostProcessor 可以解析
+* `ConfigurationClassPostProcessor` 可以解析
     * @ComponentScan
     * @Bean
     * @Import
     * @ImportResource
-* MapperScannerConfigurer 可以解析
+* `MapperScannerConfigurer` 可以解析
     * Mapper 接口
 
 #### 收获💡
@@ -336,9 +336,9 @@ public class TestMethodTemplate {
 
 #### 收获💡
 
-1. Spring 操作元数据的工具类 CachingMetadataReaderFactory
-2. 通过注解元数据（AnnotationMetadata）获取直接或间接标注的注解信息
-3. 通过类元数据（ClassMetadata）获取类名，AnnotationBeanNameGenerator 生成 bean 名
+1. Spring 操作元数据的工具类 `CachingMetadataReaderFactory`
+2. 通过注解元数据（`AnnotationMetadata`）获取直接或间接标注的注解信息
+3. 通过类元数据（ClassMetadata）获取类名，`AnnotationBeanNameGenerator` 生成 bean 名
 4. 解析元数据是基于 ASM 技术
 
 #### 演示3 - 模拟解析 @Bean
@@ -373,14 +373,15 @@ public class TestMethodTemplate {
 #### 收获💡
 
 1. Aware 接口提供了一种【内置】 的注入手段，例如
-    * BeanNameAware 注入 bean 的名字
-    * BeanFactoryAware 注入 BeanFactory 容器
-    * ApplicationContextAware 注入 ApplicationContext 容器
-    * EmbeddedValueResolverAware 注入 ${} 解析器
+    * `BeanNameAware` 注入 bean 的名字
+    * `BeanFactoryAware` 注入 BeanFactory 容器
+    * `ApplicationContextAware` 注入 ApplicationContext 容器
+    * `EmbeddedValueResolverAware` 注入 ${} 解析器
 2. InitializingBean 接口提供了一种【内置】的初始化手段
 3. 对比
     * 内置的注入和初始化不受扩展功能的影响，总会被执行
-    * 而扩展功能受某些情况影响可能会失效
+    * 而(@Autowried实现的)
+      扩展功能受某些情况影响可能会失效，比如说没加bean后置处理器`AutowiredAnnotationBeanPostProcessor`、`CommonAnnotationBeanPostProcessor`
     * 因此 Spring 框架内部的类常用内置注入和初始化
 
 #### 配置类 @Autowired 失效分析
@@ -402,8 +403,9 @@ ac ->> config : 3.3 执行 Aware 及 InitializingBean
 config -->> -ac : 3.4 创建成功
 ```
 
-Java 配置类包含 BeanFactoryPostProcessor 的情况，因此要创建其中的 BeanFactoryPostProcessor 必须提前创建 Java 配置类，而此时的
-BeanPostProcessor 还未准备好，导致 @Autowired 等注解失效
+Java 配置类包含 BeanFactoryPostProcessor 的情况，因此要创建其中的 BeanFactoryPostProcessor 必须提前创建 Java
+配置类，而此时的BeanPostProcessor 还未准备好，导致 @Autowired 等注解失效【也就是说，使用自定义的BeanFactoryPostProcessor
+会导致Bean的创建流程先开始第三步Java配置类，从而导致BeanPostProcessor以及一些依赖注入等拓展功能还没有及时完成 】
 
 ```mermaid
 sequenceDiagram 
@@ -454,7 +456,7 @@ public class MyConfig1 {
 >
 > 解决方法：
 >
-> * 用内置依赖注入和初始化取代扩展依赖注入和初始化
+> * 用内置依赖注入和初始化InitializingBean取代扩展依赖注入和初始化
 > * 用静态工厂方法代替实例工厂方法，避免工厂对象提前被创建
 
 ### 7) 初始化与销毁
