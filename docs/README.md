@@ -8,6 +8,9 @@ alt + 7 查看所有方法
 
 1.
 感觉也可以写一篇blog：[java新特性 ---- instanceof的模式匹配-总结版_idea java: -source 15 中不支持 instanceof 中的模式匹配-CSDN博客](https://blog.csdn.net/weixin_53676834/article/details/135852897)
+2. jdk>=9不能直接反射调用jdk的方法，会报错`IllegaAccessExpection`
+   ，满老师给出了三种解决办法：①换成jdk8；②每个方法重写tostring；③运行时加上`--add-opens java.base/java.lang=ALL-UNNAMED`
+   【可以参考https://zhuanlan.zhihu.com/p/255148709和https://zhuanlan.zhihu.com/p/681698350】
 
 ## 容器与 bean
 
@@ -469,37 +472,39 @@ public class MyConfig1 {
 
 #### 收获💡
 
+【三种初始化Bean方法：1. @PostConstruct 2. 实现InitializingBean接口 3. @Bean(initMenthod = "init3")】
+
 Spring 提供了多种初始化手段，除了课堂上讲的 @PostConstruct，@Bean(initMethod) 之外，还可以实现 InitializingBean
 接口来进行初始化，如果同一个 bean 用了以上手段声明了 3 个初始化方法，那么它们的执行顺序是
 
 1. @PostConstruct 标注的初始化方法
 2. InitializingBean 接口的初始化方法
-3. @Bean(initMethod) 指定的初始化方法
+3. @Bean(initMethod="xxxx") 指定的初始化方法
 
 与初始化类似，Spring 也提供了多种销毁手段，执行顺序为
 
 1. @PreDestroy 标注的销毁方法
 2. DisposableBean 接口的销毁方法
-3. @Bean(destroyMethod) 指定的销毁方法
+3. @Bean(destroyMethod="xxxx") 指定的销毁方法
 
 ### 8) Scope
 
 在当前版本的 Spring 和 Spring Boot 程序中，支持五种 Scope
 
-* singleton，容器启动时创建（未设置延迟），容器关闭时销毁
-* prototype，每次使用时创建，不会自动销毁，需要调用 DefaultListableBeanFactory.destroyBean(bean) 销毁
-* request，每次请求用到此 bean 时创建，请求结束时销毁
-* session，每个会话用到此 bean 时创建，会话结束时销毁
-* application，web 容器用到此 bean 时创建，容器停止时销毁
+* singleton，**容器启动**时创建（未设置延迟），容器关闭时销毁
+* prototype，**每次使用**时创建，不会自动销毁，需要调用 `DefaultListableBeanFactory.destroyBean(bean)` 销毁
+* request，**每次请求**用到此 bean 时创建，请求结束时销毁
+* session，**每个会话**用到此 bean 时创建，会话结束时销毁
+* application，**web 容器**用到此 bean 时创建，容器停止时销毁
 
 有些文章提到有 globalSession 这一 Scope，也是陈旧的说法，目前 Spring 中已废弃
 
 但要注意，如果在 singleton 注入其它 scope 都会有问题，解决方法有
 
-* @Lazy
-* @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
-* ObjectFactory
-* ApplicationContext.getBean
+* @Lazy【在被注入类】
+* @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)【在注入目标上】
+* ObjectFactory<class>
+* 注入ApplicationContext.getBean
 
 #### 演示1 - request, session, application 作用域
 
